@@ -1,0 +1,53 @@
+{% extends 'shop/base.html' %}
+
+{% block title %}О нас — ПК под ключ{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="page-title mb-4">О компании «ПК под ключ»</h1>
+
+    <div class="card mb-4">
+        <div class="card-body">
+            <h5 class="card-title">Кто мы</h5>
+            <p class="card-text">
+                «ПК под ключ» — интернет-магазин сборок персональных компьютеров.
+                Мы подбираем, собираем и доставляем готовые ПК под любые задачи:
+                от офисной работы до топового гейминга и профессиональных рабочих станций.
+            </p>
+            <p class="card-text">
+                Наша команда — специалисты с опытом более 10 лет в сборке
+                и настройке компьютерной техники. Мы проверяем каждую сборку
+                перед отправкой и даём гарантию 12 месяцев на все комплектующие.
+            </p>
+        </div>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-body">
+            <h5 class="card-title">Контакты</h5>
+            <ul class="list-unstyled">
+                <li><strong>Телефон:</strong> 8 (800) 555-35-35</li>
+                <li><strong>Email:</strong> support@pc-pod-kluch.ru</li>
+                <li><strong>Адрес:</strong> г. Москва, ул. Технологическая, д. 12, офис 405</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-body">
+            <h5 class="card-title">Поддержка</h5>
+            <ul class="list-unstyled">
+                <li><strong>Время работы:</strong> Пн–Пт, 09:00–20:00 (МСК)</li>
+                <li><strong>Суббота:</strong> 10:00–16:00</li>
+                <li><strong>Воскресенье:</strong> выходной</li>
+            </ul>
+            <p class="card-text mt-2">
+                По вопросам заказов, доставки и гарантии пишите на почту
+                или звоните по указанному номеру — мы отвечаем в течение 24 часов.
+            </p>
+        </div>
+    </div>
+
+    <a href="{% url 'shop:product_list' %}" class="btn btn-primary">← Вернуться в каталог</a>
+</div>
+{% endblock %}

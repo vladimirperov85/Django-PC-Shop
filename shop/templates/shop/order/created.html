@@ -1,0 +1,19 @@
+{% extends 'shop/base.html' %}
+
+{% block title %}Заказ оформлен!{% endblock %}
+
+{% block content %}
+<div class="text-center py-5">
+    <h1 class="display-4 text-success">✅ Спасибо за заказ!</h1>
+    <p class="lead">
+        Ваш заказ успешно оформлен. 
+    </p>
+    <hr class="my-4">
+    <p>
+        Менеджер позвонит вам для подтверждения деталей заказа.
+    </p>
+    <a href="{% url 'shop:product_list' %}" class="btn btn-primary btn-lg">
+        🛍️ Вернуться в каталог
+    </a>
+</div>
+{% endblock %}

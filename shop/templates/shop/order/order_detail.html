@@ -1,0 +1,70 @@
+{% extends 'shop/base.html' %}
+
+{% block title %}Заказ №{{ order.id }}{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1>Заказ №{{ order.id }}</h1>
+
+    <div class="card mb-4">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <span>
+                <strong>Дата:</strong> {{ order.created|date:"d.m.Y H:i" }}
+            </span>
+            <span class="badge 
+                {% if order.status == 'new' %}bg-secondary
+                {% elif order.status == 'processing' %}bg-info
+                {% elif order.status == 'paid' %}bg-primary
+                {% elif order.status == 'delivered' %}bg-success
+                {% elif order.status == 'cancelled' %}bg-danger
+                {% endif %}">
+                {{ order.get_status_display }}
+            </span>
+        </div>
+        <div class="card-body">
+            <h5 class="card-title">Данные покупателя</h5>
+            <p><strong>Имя:</strong> {{ order.first_name }} {{ order.last_name }}</p>
+            <p><strong>Email:</strong> {{ order.email }}</p>
+            <p><strong>Телефон:</strong> {{ order.phone }}</p>
+            <p><strong>Адрес:</strong> {{ order.address }}</p>
+        </div>
+    </div>
+
+    <h3 class="mb-3">Товары в заказе</h3>
+
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead class="table-dark">
+                <tr>
+                    <th>Товар</th>
+                    <th class="text-center">Количество</th>
+                    <th class="text-end">Цена</th>
+                    <th class="text-end">Сумма</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in order.items.all %}
+                <tr>
+                    <td>
+                        <a href="{% url 'shop:product_detail' item.product.slug %}" class="text-decoration-none">
+                            {{ item.product.name }}
+                        </a>
+                    </td>
+                    <td class="text-center">{{ item.quantity }}</td>
+                    <td class="text-end">{{ item.price }} ₽</td>
+                    <td class="text-end"><strong>{{ item.get_cost }} ₽</strong></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+            <tfoot>
+                <tr class="table-primary">
+                    <td colspan="3" class="text-end fw-bold">Итого:</td>
+                    <td class="text-end fw-bold">{{ order.get_total_cost }} ₽</td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+
+    <a href="{% url 'shop:user_orders' %}" class="btn btn-outline-secondary">← Назад к моим заказам</a>
+</div>
+{% endblock %}

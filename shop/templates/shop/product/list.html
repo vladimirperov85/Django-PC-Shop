@@ -1,0 +1,90 @@
+{% extends 'shop/base.html' %}
+
+{% block title %}Магазин сборок ПК{% endblock %}
+
+{% block content %}
+    <h1 class="page-title mb-4">🖥️ Сборки компьютеров</h1>
+
+    {% if page_obj %}
+        <p class="text-muted">Найдено товаров: {{ page_obj.paginator.count }}</p>
+        
+        <div class="row">
+        {% for product in page_obj %}
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="card product-card h-100 shadow-sm">
+{% if product.image %}
+                    <div class="product-card-img d-flex align-items-center justify-content-center" style="height: 280px;">
+                        <img src="{{ product.image.url }}" alt="{{ product.name }}" class="product-card-img-file">
+                    </div>
+{% else %}
+                    <div class="product-card-img bg-secondary text-white d-flex align-items-center justify-content-center" style="height: 280px;">
+                    <span>Нет изображения</span>
+                    </div>
+                    {% endif %}
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            <a href="{% url 'shop:product_detail' product.slug %}" class="text-decoration-none">
+                                {{ product.name }}
+                            </a>
+                        </h5>
+                        <h6 class="card-subtitle mb-2 text-muted">
+                            Категория: 
+                            <a href="{% url 'shop:products_by_category' product.category.slug %}" class="text-decoration-none">
+                                {{ product.category.name }}
+                            </a>
+                        </h6>
+                        <p class="card-text">{{ product.description|linebreaks|truncatewords:30 }}</p>
+                    </div>
+                    <div class="card-footer bg-transparent">
+                        <strong class="text-primary">{{ product.price }} ₽</strong>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+        </div>
+
+        <!-- Навигация по страницам -->
+        {% if page_obj.has_other_pages %}
+        <nav aria-label="Навигация по страницам" class="mt-4">
+            <ul class="pagination justify-content-center">
+                <!-- Кнопка "Назад" -->
+                {% if page_obj.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?{{ search_params }}page={{ page_obj.previous_page_number }}">« Назад</a>
+                    </li>
+                {% else %}
+                    <li class="page-item disabled">
+                        <span class="page-link">« Назад</span>
+                    </li>
+                {% endif %}
+
+                <!-- Номера страниц -->
+                {% for num in page_obj.paginator.page_range %}
+                    {% if page_obj.number == num %}
+                        <li class="page-item active">
+                            <span class="page-link">{{ num }}</span>
+                        </li>
+                    {% else %}
+                        <li class="page-item">
+                            <a class="page-link" href="?{{ search_params }}page={{ num }}">{{ num }}</a>
+                        </li>
+                    {% endif %}
+                {% endfor %}
+
+                <!-- Кнопка "Вперёд" -->
+                {% if page_obj.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?{{ search_params }}page={{ page_obj.next_page_number }}">Вперёд »</a>
+                    </li>
+                {% else %}
+                    <li class="page-item disabled">
+                        <span class="page-link">Вперёд »</span>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
+        {% endif %}
+    {% else %}
+        <div class="alert alert-info">Товаров пока нет 😢</div>
+    {% endif %}
+{% endblock %}
