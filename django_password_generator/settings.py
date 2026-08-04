@@ -17,8 +17,6 @@ from decouple import config
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = config("SECRET_KEY")
@@ -73,7 +71,6 @@ WSGI_APPLICATION = "django_password_generator.wsgi.application"
 
 
 # Database
-# https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
 DATABASES = {
     "default": {
@@ -120,10 +117,10 @@ USE_TZ = True
 STATIC_URL = "static/"
 
 # Дополнительные директории со статическими файлами
-# (помимо автоматически собираемых из папок static/ внутри приложений)
+
 STATICFILES_DIRS = [BASE_DIR / "shop" / "static"]
 
-# Media files (user-uploaded images, documents)
+# Media files 
 MEDIA_URL = "media/"
 MEDIA_ROOT = BASE_DIR / "media"
 
@@ -134,6 +131,7 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 CART_SESSION_ID = "cart"
 TIME_ZONE = "Europe/Moscow"
 # Настройки аутентификации
+
 LOGIN_REDIRECT_URL = "shop:product_list"  # Перенаправляем на главную после входа
 LOGIN_URL = "shop:login"  # Страница входа
 LOGOUT_REDIRECT_URL = "shop:product_list"  # Перенаправляем на главную после выхода

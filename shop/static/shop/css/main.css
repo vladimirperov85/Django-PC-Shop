@@ -2,17 +2,19 @@
     main.css — пользовательские стили магазина.
     Bootstrap 5 подключается через CDN в base.html.
     Этот файл дополняет и переопределяет стили Bootstrap.
-*/
+ */
 
-/* =============================================
+/*
+=============================================
 ФОН САЙТА — градиент чёрный → тёмно-фиолетовый
-   ============================================= */
+============================================= 
+*/
 body {
     background: linear-gradient(135deg, #1e0909 0%, #4c1580 100%);
     min-height: 100vh;
 }
 
-/* Контентные блоки (карточки, таблицы) — белый фон, чтобы контент был читаемым */
+
 .card,
 .table,
 .bg-light,
@@ -21,110 +23,104 @@ body {
     background-color: #c5a4e5 !important;
 }
 
-/* =============================================
+/*
+=============================================
 КАРТОЧКИ ТОВАРОВ В КАТАЛОГЕ — светло-фиолетовые
-   ============================================= */
+============================================= */
+
 .product-card {
     background-color: #c5a4e5 !important;
-    /* светло-фиолетовый */
     border: none;
 }
 
 .product-card .card-title a {
     color: #070500;
-    /* жёлтый */
     font-weight: bold;
 }
 
 .product-card .card-title a:hover {
     color: #0a0900;
-    /* ярко-жёлтый при наведении */
+
 }
 
 .product-card .card-subtitle,
 .product-card .card-subtitle a {
     color: #181103 !important;
-    /* тёмно-жёлтый для подзаголовка */
 }
 
 .product-card .card-text {
     color: #110d05;
-    /* янтарный для текста */
+
 }
 
 .product-card .card-footer {
     background-color: transparent !important;
     border-top: 1px solid #05010c;
-    /* фиолетовая разделительная линия */
+    
 }
 
 .product-card .card-footer strong {
     color: #0e63ec !important;
-    /* жёлтая цена */
     font-size: 1.2rem;
 }
 
 /* Контейнер изображения товара — под цвет карточки */
 .product-card-img {
     background-color: #d9c2f0 !important;
-    /* светло-фиолетовый, как карточка */
     border-radius: 0.375rem 0.375rem 0 0;
-    /* скругление только сверху */
     overflow: hidden;
-    /* чтобы изображение не вылезало за скруглённые углы */
 }
 
 /* Само изображение — на всю ширину контейнера */
+
 .product-card-img-file {
     width: 100%;
     height: 100%;
     object-fit: contain;
-    /* изображение целиком, без обрезания */
 }
 
 /* =============================================
-ЗАГОЛОВОК СТРАНИЦЫ КАТАЛОГА
-   ============================================= */
+        ЗАГОЛОВОК СТРАНИЦЫ КАТАЛОГА
+============================================= */
+
 .page-title {
     color: #d9c2f0;
-    /* светло-фиолетовый */
+
 }
 
 /* =============================================
-ПАГИНАЦИЯ — светло-фиолетовые кнопки
+    ПАГИНАЦИЯ — светло-фиолетовые кнопки
    ============================================= */
 
 /* Обычные и активные кнопки — фон и текст */
+
 .page-link {
     background-color: #d9c2f0 !important;
-    /* светло-фиолетовый фон */
     color: #4c1580 !important;
-    /* тёмно-фиолетовый текст */
     border: 1px solid #b388ff !important;
-    /* фиолетовая рамка */
+    
 }
 
 /* Кнопка при наведении */
+
 .page-link:hover {
     background-color: #b388ff !important;
-    /* темнее фиолетовый */
     color: #ffffff !important;
-    /* белый текст */
+    
 }
 
 /* Активная страница (текущая) */
+
 .page-item.active .page-link {
     background-color: #4c1580 !important;
-    /* тёмно-фиолетовый */
     color: #d9c2f0 !important;
-    /* светло-фиолетовый текст */
     border: 1px solid #4c1580 !important;
 }
 
 /* Отключённые кнопки (Назад/Вперёд, когда нельзя нажать) */
+
 .page-item.disabled .page-link {
     background-color: #8a6baa !important;
-    /* приглушённый фиолетовый */
     color: #d9c2f0 !important;
     opacity: 0.6;
 }
@@ -134,24 +130,23 @@ body {
    ============================================= */
 
 /* Кнопка "Добавить в корзину", "Оформить заказ", "Войти", "Оплатить" */
+
 .btn-success {
     background-color: #8f3da4 !important;
-    /* тёмно-фиолетовый */
     border-color: #7b2d8e !important;
     color: #ffffff !important;
 }
 
 .btn-success:hover {
     background-color: #752c86 !important;
-    /* светлее при наведении */
     border-color: #8a399c !important;
     color: #ffffff !important;
 }
 
 /* Кнопка "Оформить заказ" в форме (была btn-primary) */
+
 .btn-primary {
     background-color: #7f3591 !important;
-    /* тот же тёмно-фиолетовый */
     border-color: #7a338b !important;
     color: #ffffff !important;
 }
@@ -165,18 +160,15 @@ body {
 /* =============================================
     КНОПКА "КОРЗИНА" В ШАПКЕ
    ============================================= */
+
 .cart-nav-btn {
     background-color: #7b2d8e !important;
-    /* тёмно-фиолетовый */
     border-radius: 0.375rem !important;
-    /* скругление как у кнопок */
     padding: 0.375rem 0.75rem !important;
-    /* отступы как у кнопок */
     color: #ffffff !important;
 }
 
 .cart-nav-btn:hover {
     background-color: #9b3fb0 !important;
-    /* светлее при наведении */
     color: #ffffff !important;
 }

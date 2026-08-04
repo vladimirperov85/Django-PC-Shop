@@ -1,5 +1,5 @@
 from .models import Category
-from .cart import Cart  # ← Импортируем класс Cart
+from .cart import Cart  
 
 
 def categories(request):
