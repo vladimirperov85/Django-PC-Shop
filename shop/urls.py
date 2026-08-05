@@ -1,4 +1,4 @@
-# Django/Django-bboard/shop/urls.py
+# PC_Shop/shop/urls.py
 from django.contrib.auth import views as auth_views
 from django.urls import path
 from . import views  

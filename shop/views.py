@@ -1,4 +1,4 @@
-# Django/Django-bboard/shop/views.py
+# PC_Shop/shop/views.py
 
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.decorators.http import require_POST

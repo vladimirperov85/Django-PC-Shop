@@ -50,7 +50,7 @@
 
 ```bash
 git clone <url-репозитория>
-cd Django-bboard
+cd PC_Shop
 ```
 
 ### 2. Создание виртуального окружения
@@ -113,7 +113,7 @@ python manage.py runserver
 ## 📁 Структура проекта
 
 ```
-Django-bboard/
+PC_Shop/
 ├── django_password_generator/   # Конфигурация проекта
 │   ├── settings.py              # Настройки Django
 │   ├── urls.py                  # Главная маршрутизация
