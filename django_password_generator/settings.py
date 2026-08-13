@@ -21,9 +21,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = config("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = config("DEBUG", default=False, cast=bool)
 
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = config("ALLOWED_HOSTS", default="localhost,127.0.0.1").split(",")
 
 
 # Application definition
@@ -71,13 +71,28 @@ WSGI_APPLICATION = "django_password_generator.wsgi.application"
 
 
 # Database
+# Автоматический выбор базы данных:
+# - если в .env указано DB_ENGINE=postgres — подключаемся к PostgreSQL (сервер/продакшен)
+# - иначе — используем SQLite (локальная разработка, файл db.sqlite3)
 
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+if config("DB_ENGINE", default="sqlite") == "postgres":
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.postgresql",
+            "NAME": config("DB_NAME"),
+            "USER": config("DB_USER"),
+            "PASSWORD": config("DB_PASSWORD"),
+            "HOST": config("DB_HOST", default="localhost"),
+            "PORT": config("DB_PORT", default="5432"),
+        }
     }
-}
+else:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / "db.sqlite3",
+        }
+    }
 
 
 # Password validation
@@ -116,6 +131,9 @@ USE_TZ = True
 
 STATIC_URL = "static/"
 
+# Папка, куда collectstatic собирает все статические файлы для продакшена
+STATIC_ROOT = BASE_DIR / "staticfiles"
+
 # Дополнительные директории со статическими файлами
 
 STATICFILES_DIRS = [BASE_DIR / "shop" / "static"]
@@ -135,3 +153,11 @@ TIME_ZONE = "Europe/Moscow"
 LOGIN_REDIRECT_URL = "shop:product_list"  # Перенаправляем на главную после входа
 LOGIN_URL = "shop:login"  # Страница входа
 LOGOUT_REDIRECT_URL = "shop:product_list"  # Перенаправляем на главную после выхода
+
+# HTTPS-настройки (пока выключены, активируются при появлении домена и SSL)
+SECURE_SSL_REDIRECT = config("SECURE_SSL_REDIRECT", default=False, cast=bool)
+SESSION_COOKIE_SECURE = config("SESSION_COOKIE_SECURE", default=False, cast=bool)
+CSRF_COOKIE_SECURE = config("CSRF_COOKIE_SECURE", default=False, cast=bool)
+SECURE_HSTS_SECONDS = config("SECURE_HSTS_SECONDS", default=0, cast=int)
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+SECURE_HSTS_PRELOAD = True
