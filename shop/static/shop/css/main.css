@@ -172,3 +172,7 @@ body {
     background-color: #9b3fb0 !important;
     color: #ffffff !important;
 }
+
+.breadcrumb-item a {
+    color: #d9c2f0;
+}

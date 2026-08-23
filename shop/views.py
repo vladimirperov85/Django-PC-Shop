@@ -1,18 +1,16 @@
 # PC_Shop/shop/views.py
 
-from django.shortcuts import render, redirect, get_object_or_404
-from django.views.decorators.http import require_POST
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib import messages
+from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.http import JsonResponse
-from .models import Product
-from .models import Category, Order, OrderItem
+from django.shortcuts import get_object_or_404, redirect, render
+from django.views.decorators.http import require_POST
+
 from .cart import Cart
 from .forms import OrderForm, UserRegisterForm
-from django.contrib.auth import login
-from django.contrib.auth.models import User
-from django.contrib import messages
+from .models import Category, Order, OrderItem, Product
 
 
 def product_list(request):
@@ -120,7 +118,7 @@ def cart_add_ajax(request, product_id):
                 "product_name": product.name,
             }
         )
-    
+
     cart.add(product=product, quantity=1, override_quantity=False)
 
     # Сохраняем сообщение — появится при следующем переходе на другую страницу
