@@ -1,0 +1,5 @@
+[tool.ruff.lint.per-file-ignores]
+# RUF012 (mutable class attribute) — ложные срабатывания на
+# декларативном стиле Django: Meta, choices, ordering, indexes
+"**/models.py" = ["RUF012"]
+"**/forms.py" = ["RUF012"]

@@ -67,6 +67,49 @@ python manage.py shell
 
 ---
 
+## 🧪 Тесты
+
+> ⚠️ **Важно:** перед запуском тестов активируй виртуальное окружение (см. раздел «Виртуальное окружение»).
+> Тесты запускаются **только** через `manage.py`, а не напрямую (`python tests.py` — так не работает).
+
+### Локально (Windows)
+```bash
+# Активировать окружение (если ещё не активировано)
+.venv\Scripts\activate
+
+# Запустить ВСЕ тесты проекта
+python manage.py test
+
+# Запустить тесты конкретного приложения (например, shop)
+python manage.py test shop
+
+# Запустить тесты конкретного класса (например, OrderItemModelTest)
+python manage.py test shop.tests.OrderItemModelTest
+
+# Запустить один конкретный тест (метод)
+python manage.py test shop.tests.OrderItemModelTest.test_get_cost_calculates_price_times_quantity
+
+# Запустить с подробным выводом (уровень детализации 2)
+python manage.py test shop -v 2
+```
+
+### Сервер (Ubuntu)
+```bash
+# Активировать окружение
+source .venv/bin/activate
+
+# Запустить тесты
+python manage.py test shop
+```
+
+> **Как читать вывод:**
+> - `.` (точка) — тест прошёл успешно
+> - `F` — тест упал (проверка не совпала)
+> - `E` — ошибка в самом тесте
+> - `OK` в конце — все тесты прошли
+
+---
+
 ## 🔄 Git
 
 ```bash
