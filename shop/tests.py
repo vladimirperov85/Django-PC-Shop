@@ -2,8 +2,10 @@ from decimal import Decimal
 
 from django.conf import settings
 from django.contrib.auth.models import User
-from django.test import TestCase
+from django.contrib.sessions.backends.db import SessionStore
+from django.test import RequestFactory, TestCase
 
+from .cart import Cart
 from .forms import OrderForm, UserRegisterForm
 from .models import Category, Order, OrderItem, Product
 
@@ -387,3 +389,139 @@ class OrderCreateViewTest(TestCase):
         response = self.client.post("/order/create/", data={})
         self.assertEqual(response.status_code, 200)  # страница вернулась с ошибками
         self.assertEqual(Order.objects.count(), 0)  # заказ НЕ создан
+
+
+class CartTest(TestCase):
+    """Тесты класса Cart — логика корзины, хранящейся в сессии."""
+
+    def setUp(self):
+        """Фейковый запрос сессией + товар для тестов."""
+        # RequestFactory создаёт "фейковый" запрос без реального браузера.
+        # Передаём его прямо в класс Cart, минуя вьюху.
+        self.factory = RequestFactory()
+        self.request = self.factory.get("/")
+
+        # В реальном запросе сессию подключает middleware,
+        # а RequestFactory этого не делает — добавляем сессию вручную.
+        self.request.session = SessionStore()
+
+        # Корзина, которую будем тестировать
+        self.cart = Cart(self.request)
+
+        # Товар в базе
+        self.category = Category.objects.create(name="Игровые", slug="gaming")
+        self.product = Product.objects.create(
+            category=self.category,
+            name="Игровой ПК",
+            slug="gaming-pc",
+            price=100.00,
+        )
+
+    def test_cart_starts_empty(self):
+        """Новая корзина пуста: 0 товаров и стоимость 0."""
+        self.assertEqual(len(self.cart), 0)
+        self.assertEqual(self.cart.get_total_price(), Decimal(0))
+        
+    def test_add_product(self):
+        """Добавление товара: количество 1, цена записана в корзину."""
+        self.cart.add(self.product)
+
+        # Товар появился в корзине
+        self.assertTrue(self.cart.has_product(self.product))
+        # Количество — 1
+        self.assertEqual(len(self.cart), 1)
+        # Цена сохранена как строка (сессия не умет Decimal),
+        # сравниваем денежное значение, а не точный вид строки
+        item = self.cart.cart[str(self.product.id)]
+        self.assertEqual(item["quantity"], 1)
+        self.assertEqual(Decimal(item["price"]), Decimal("100.00"))
+
+    def test_add_same_product_increments_quantity(self):
+        """Повторное добавление того же товара увеличивает количество."""
+        self.cart.add(self.product)
+        self.cart.add(self.product)
+
+        # Разных товаров в корзине — один
+        self.assertEqual(len(self.cart.cart), 1)
+        # Но его количество стало 2 (а значит len(cart) = 2 единицы)
+        self.assertEqual(self.cart.cart[str(self.product.id)]["quantity"], 2)
+        self.assertEqual(len(self.cart), 2)
+
+    def test_add_with_override_quantity(self):
+        """override_quantity=True перезаписывает количество, а не сумирует."""
+        self.cart.add(self.product, quantity=2)
+        self.cart.add(self.product, quantity=5, override_quantity=True)
+
+        # Количество стало ровно 5, а не 2 + 5
+        self.assertEqual(self.cart.cart[str(self.product.id)]["quantity"], 5)
+        
+        
+    def test_remove_product(self):
+        """Удаление товара: товар исчезает из корзины."""
+        self.cart.add(self.product)
+        self.cart.remove(self.product)
+
+        self.assertEqual(len(self.cart), 0) # разных товаров — 0
+        self.assertEqual(len(self.cart), 0)      # единиц всего — 0
+
+    def test_remove_nonexistent_product_is_safe(self):
+        """Удаление товара, которого и так нет в корзине, не ломает ничего."""
+        self.cart.remove(self.product) # корзина пуста, удалять нечего
+
+        self.assertEqual(len(self.cart), 0)
+
+    def test_has_product(self):
+        """has_product(): False добавления, True после."""
+        self.assertFalse(self.cart.has_product(self.product))
+        self.cart.add(self.product)
+        self.assertTrue(self.cart.has_product(self.product))
+
+    def test_clear_removes_cart_from_session(self):
+        """clear() удаляет корзину из сессии; новая корзина снова пуста."""
+        self.cart.add(self.product)
+        self.cart.clear()
+
+        # Ключ корзины исчез из сессии
+        self.assertNotIn(settings.CART_SESSION_ID, self.request.session)
+
+        # «Следующий запрос» того же пользователя получит новую пустую корзину
+        fresh_cart = Cart(self.request)
+        self.assertEqual(len(fresh_cart), 0)    
+        
+    def test_iteration_yields_items_with_product_and_totals(self):
+        """Перебор корзины: каждый элемент содержит product, Decimal-цену и total_price."""
+        self.cart.add(self.product, quantity=2)
+
+        items = list(self.cart)  # list() заставляет сработать __iter__
+
+        # В корзине один товар — значит, при переборе получим один элемент
+        self.assertEqual(len(items), 1)
+        item = items[0]
+        # product — настоящий объект Product из базы
+        self.assertEqual(item["product"], self.product)
+        # price уже Decimal, а не строка
+        self.assertEqual(item["price"], Decimal("100.00"))
+        # total_price = цена × количество
+        self.assertEqual(item["total_price"], Decimal("200.00"))
+
+    def test_len_counts_total_quantity(self):
+        """len(cart) — сумма количеств всех товаров."""
+        mouse = Product.objects.create(
+            category=self.category, name="Мышка", slug="mouse", price=50.00
+        )
+        self.cart.add(self.product, quantity=2)
+        self.cart.add(mouse, quantity=3)
+
+        # 2 + 3 = 5 единиц
+        self.assertEqual(len(self.cart), 5)
+
+    def test_get_total_price_sums_all_items(self):
+        """get_total_price() — общая стоимость всех товаров в корзине."""
+        mouse = Product.objects.create(
+            category=self.category, name="Мышка", slug="mouse", price=50.00
+        )
+        self.cart.add(self.product, quantity=2) # 100 × 2 = 200
+        self.cart.add(mouse, quantity=3)         # 50 × 3 = 150
+
+        # 200 + 150 = 350
+        self.assertEqual(self.cart.get_total_price(), Decimal("350.00"))
