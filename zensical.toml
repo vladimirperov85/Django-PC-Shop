@@ -1,0 +1,14 @@
+[project]
+site_name = "PC_Shop"
+site_description = "Интернет-магазин компьютерной техники на Django"
+site_author = "Владимир"
+docs_dir = "docs"
+site_dir = "https://vladimirperov85.github.io/Django-PC-Shop"
+
+nav = [
+   "index.md",
+    "features.md",
+   "models.md",
+    "install.md",
+    "tech.md",
+]
