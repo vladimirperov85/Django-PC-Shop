@@ -1,4 +1,5 @@
 # PC_Shop/shop/views.py
+# pyright: reportAttributeAccessIssue=false
 
 from django.contrib import messages
 from django.contrib.auth import login
